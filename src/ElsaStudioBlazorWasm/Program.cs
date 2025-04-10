@@ -11,20 +11,44 @@ using Elsa.Studio.Workflows.Designer.Extensions;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Elsa.Studio.Models;
+using Microsoft.Extensions.Logging;
 
 // Build the host.
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 var configuration = builder.Configuration;
 
+builder.Services.AddLogging(logging => logging
+    .SetMinimumLevel(LogLevel.Debug)
+    .AddFilter("Microsoft", LogLevel.Warning)
+    .AddFilter("System", LogLevel.Warning));
 // Register root components.
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.RootComponents.RegisterCustomElsaStudioElements();
 
+// Get logger
+var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILoggerFactory>()
+    .CreateLogger<Program>();
+
 // Register shell services and modules.
 var backendApiConfig = new BackendApiConfig
 {
-    ConfigureBackendOptions = options => builder.Configuration.GetSection("Backend").Bind(options),
+    ConfigureBackendOptions = options =>
+    {
+        var backendSection = builder.Configuration.GetSection("Backend");
+        backendSection.Bind(options);
+
+        // Override URL from environment if provided
+        var backendUrl = builder.Configuration["Backend__Url"];
+        logger.LogInformation("Backend URL from configuration: {BackendUrl}", backendUrl);
+        logger.LogInformation("Current Backend URL from options: {CurrentUrl}", options.Url);
+
+        if (!string.IsNullOrEmpty(backendUrl))
+        {
+            options.Url = new Uri(backendUrl);
+            logger.LogInformation("Updated Backend URL to: {UpdatedUrl}", options.Url);
+        }
+    },
     ConfigureHttpClientBuilder = options => options.AuthenticationHandler = typeof(AuthenticatingApiHttpMessageHandler)
 };
 
