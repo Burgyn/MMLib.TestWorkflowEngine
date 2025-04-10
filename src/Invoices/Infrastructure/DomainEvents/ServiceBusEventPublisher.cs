@@ -16,7 +16,7 @@ public class ServiceBusEventPublisher : IEventPublisher
     public ServiceBusEventPublisher(ServiceBusClient client)
     {
         _client = client;
-        _sender = _client.CreateSender("events");
+        _sender = _client.CreateSender("domain-events");
     }
 
     public async Task PublishAsync<T>(T @event, CancellationToken cancellationToken = default) where T : class
