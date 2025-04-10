@@ -15,12 +15,12 @@ public static class UpdateOrderStatusEndpoint
     }
 
     private static async Task<Results<NoContent, NotFound>> UpdateStatus(
-        OrderDbContext dbContext, 
-        int id, 
+        OrderDbContext dbContext,
+        int id,
         UpdateOrderStatusRequest request)
     {
         var order = await dbContext.Orders.FindAsync(id);
-            
+
         if (order == null)
         {
             return TypedResults.NotFound();
@@ -28,8 +28,8 @@ public static class UpdateOrderStatusEndpoint
 
         order.Status = request.NewStatus;
         order.LastModifiedAt = DateTime.UtcNow;
-            
+
         await dbContext.SaveChangesAsync();
         return TypedResults.NoContent();
     }
-} 
+}

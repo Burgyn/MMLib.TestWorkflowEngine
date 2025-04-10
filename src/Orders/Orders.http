@@ -1,6 +1,19 @@
 @Orders_HostAddress = http://localhost:5150
 
-GET {{Orders_HostAddress}}/weatherforecast/
+### Get all orders
+GET {{Orders_HostAddress}}/orders
 Accept: application/json
 
-###
+### Get specific order
+GET {{Orders_HostAddress}}/orders/1
+Accept: application/json
+
+### Create new order
+POST {{Orders_HostAddress}}/orders
+Content-Type: application/json
+
+{
+    "customerName": "Michal Kováč",
+    "description": "PlayStation 5 + Extra Controller + FIFA 24",
+    "totalAmount": 649.99
+}
