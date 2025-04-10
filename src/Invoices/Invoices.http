@@ -1,6 +1,45 @@
 @Invoices_HostAddress = http://localhost:5072
 
-GET {{Invoices_HostAddress}}/weatherforecast/
+### Get all invoices
+GET {{Invoices_HostAddress}}/invoices
 Accept: application/json
+
+### Get specific invoice
+GET {{Invoices_HostAddress}}/invoices/1
+Accept: application/json
+
+### Create new invoice
+POST {{Invoices_HostAddress}}/invoices
+Content-Type: application/json
+
+{
+    "customerName": "Michal Kováč",
+    "dueDate": "2024-03-15T00:00:00Z",
+    "items": [
+        {
+            "description": "PlayStation 5 Digital Edition",
+            "unitPrice": 449.99,
+            "quantity": 1
+        },
+        {
+            "description": "DualSense Wireless Controller",
+            "unitPrice": 69.99,
+            "quantity": 2
+        },
+        {
+            "description": "PS5 HD Camera",
+            "unitPrice": 59.99,
+            "quantity": 1
+        }
+    ]
+}
+
+### Pay invoice
+PUT {{Invoices_HostAddress}}/invoices/1/pay
+Content-Type: application/json
+
+{
+    "paymentReference": "PO-2024-456"
+}
 
 ###
