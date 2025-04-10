@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
 
 // Add Azure Service Bus
-builder.AddAzureServiceBusClient("ServiceBus");
+builder.AddAzureServiceBusClient("messaging");
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
