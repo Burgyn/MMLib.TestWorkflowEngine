@@ -25,10 +25,10 @@ var tasks = builder.AddProject<Projects.Tasks>("tasks")
     .WithReference(serviceBus);
 
 // Add Elsa Workflow Engine services
-var elsaServer = builder.AddProject<Projects.ElsaServer>("elsa-server");
+//var elsaServer = builder.AddProject<Projects.ElsaServer>("elsa-server");
 
-var elsaStudio = builder.AddProject<Projects.ElsaStudioBlazorWasm>("elsa-studio")
-    .WithReference(elsaServer)
-    .WithEnvironment("Backend__Url", "{services.elsa-server.bindings.https}/elsa/api");
+//var elsaStudio = builder.AddProject<Projects.ElsaStudioBlazorWasm>("elsa-studio")
+//    .WithReference(elsaServer)
+//    .WithEnvironment("Backend__Url", "{services.elsa-server.bindings.https}/elsa/api");
 
 builder.Build().Run();
