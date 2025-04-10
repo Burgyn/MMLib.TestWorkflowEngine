@@ -14,6 +14,26 @@ Content-Type: application/json
 
 {
     "customerName": "Michal Kováč",
-    "description": "PlayStation 5 + Extra Controller + FIFA 24",
-    "totalAmount": 649.99
+    "description": "PlayStation 5 Digital Edition",
+    "unitPrice": 449.99,
+    "quantity": 1
+}
+
+### Create new order with multiple items
+POST {{Orders_HostAddress}}/orders
+Content-Type: application/json
+
+{
+    "customerName": "Lucia Malá",
+    "description": "DualSense Wireless Controller",
+    "unitPrice": 69.99,
+    "quantity": 2
+}
+
+### Update order status
+PUT {{Orders_HostAddress}}/orders/1/status
+Content-Type: application/json
+
+{
+    "newStatus": "InProgress"
 }

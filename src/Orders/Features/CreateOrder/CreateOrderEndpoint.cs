@@ -21,7 +21,8 @@ public static class CreateOrderEndpoint
         {
             CustomerName = request.CustomerName,
             Description = request.Description,
-            TotalAmount = request.TotalAmount,
+            UnitPrice = request.UnitPrice,
+            Quantity = request.Quantity,
             Status = OrderStatus.Created,
             CreatedAt = DateTime.UtcNow
         };

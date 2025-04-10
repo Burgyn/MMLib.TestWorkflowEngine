@@ -8,7 +8,11 @@ public class Order
 
     public required string Description { get; set; }
 
-    public decimal TotalAmount { get; set; }
+    public required decimal UnitPrice { get; set; }
+
+    public required int Quantity { get; set; }
+
+    public decimal TotalAmount => UnitPrice * Quantity;
 
     public OrderStatus Status { get; set; }
 
