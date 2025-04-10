@@ -1,0 +1,13 @@
+---
+description: API, domain layer, application logic
+globs: **/Application/**/*.cs
+alwaysApply: false
+---
+
+# API Design - Guide
+- **Implementation:** 
+  - Use either controllers or minimal API according to the existing style in the app service
+  - Maintain a consistent style throughout the application
+- **Design Pattern:** For new API endpoints, implement CQRS (Command Query Responsibility Segregation)
+- **Validation:** Use exclusively the FluentValidation library for input validation
+- **Learning by Example:** Study and follow the conventions of existing endpoints in the application

@@ -1,0 +1,118 @@
+---
+description: programming, code analysis, design
+globs: 
+alwaysApply: true
+---
+# .NET Development Rules - Guide
+
+## Basic Principles
+- **Developer Profile:** Follow the approach of a senior developer with specialization in:
+  - C# and .NET 8
+  - Microsoft SQL Server
+  - Kros.KORM ORM framework
+  - Microsoft Azure
+
+## Technology Foundation
+### C# and .NET
+- **Versions:** Exclusively use the latest versions:
+  - C# 12 (or higher, if available)
+  - .NET 8 (or higher, if available)
+  - Current library versions
+- **Import Management:** Automatically add appropriate `using` declarations when integrating new classes
+
+## Project Structure
+Follow this standardized structure when creating or modifying projects:
+
+```
+📂 src
+├── 📂 ApiGateways/
+│   ├── 📂 Libs/
+│   │   ├── 📂 Kros.Esw.ApiGateway.Base/
+│   │   │   ├── 📄 Project: Kros.Esw.ApiGateway.Base.csproj
+│   │   │   └── 🧪 Tests: Kros.Esw.ApiGateway.Base.Tests
+│   ├── 📂 Kros.Esw.DesktopInternal.ApiGateway/
+│   │   ├── 📄 Project: Kros.Esw.DesktopInternal.ApiGateway.csproj
+│   │   ├── 🧪 Tests: Kros.Esw.DesktopInternal.ApiGateway.Tests
+│   │   └── 📘 Solution Filter: DesktopInternal.ApiGateway.slnf
+│   ├── 📂 Kros.Esw.Invoicing.ApiGateway/
+│   │   ├── 📄 Project: Kros.Esw.Invoicing.ApiGateway.csproj
+│   │   ├── 🧪 Tests: Kros.Esw.Invoicing.ApiGateway.Tests
+│   │   └── 📘 Solution Filter: Invoicing.ApiGateway.slnf
+│   └── 📂 Kros.Esw.OpenApiGateway/
+│       ├── 📄 Project: Kros.Esw.OpenApiGateway.csproj
+│       ├── 🧪 Tests: Kros.Esw.OpenApiGateway.Tests
+│       └── 📘 Solution Filter: OpenApiGateway.slnf
+│
+├── 📂 Libs/
+│   ├── 📂 Kros.AspNetCore.JsonPatch/
+│   │   ├── 📄 Project: Kros.AspNetCore.JsonPatch.csproj
+│   │   ├── 🧪 Tests: Kros.AspNetCore.JsonPatch.Tests
+│   │   └── 📘 Solution Filter: JsonPatch.slnf
+│   ├── 📂 Kros.Esw.Authorization.Base/
+│   │   ├── 📄 Project: Kros.Esw.Authorization.Base.csproj
+│   │   ├── 🧪 Tests: Kros.Esw.Authorization.Base.Tests
+│   │   └── 📘 Solution Filter: Authorization.Base.slnf
+│   ├── 📂 Kros.Esw.Base.Blobs/
+│   │   ├── 📄 Project: Kros.Esw.Base.Blobs.csproj
+│   │   ├── 🧪 Tests: Kros.Esw.Base.Blobs.Tests
+│   │   └── 📘 Solution Filter: Blobs.slnf
+│   ├── 📂 Kros.Esw.Base.CosmosDb/
+│   │   ├── 📄 Project: Kros.Esw.Base.CosmosDb.csproj
+│   │   ├── 🧪 Tests: Kros.Esw.Base.CosmosDb.Tests
+│   │   └── 📘 Solution Filter: CosmosDb.slnf
+│   └── 📂 Kros.Esw.Base.ProblemDetails/
+│       ├── 📄 Project: Kros.Esw.Base.ProblemDetails.csproj
+│       ├── 🧪 Tests: Kros.Esw.Base.ProblemDetails.Tests
+│       └── 📘 Solution Filter: ProblemDetails.slnf
+│
+├── 📂 Services/
+│   ├── 📂 Functions/
+│   │   ├── 📂 Kros.AzFunHardDelete/
+│   │   │   ├── 📄 Project: Kros.AzFunHardDelete.csproj
+│   │   │   ├── 🧪 Tests: Kros.AzFunHardDelete.Tests
+│   │   │   └── 📘 Solution Filter: Functions.slnf
+│   ├── 📂 Authorization
+│   │   ├── 📂 Libs
+│   │   │   ├── 📂 Kros.Esw.Authorization.Api/
+│   │   │   │   ├── 📄 Project: Kros.Esw.Authorization.Api.csproj
+│   │   │   │   └── 🧪 Tests: Kros.Esw.Authorization.Api.Tests
+│   │   ├── 📂 Kros.Esw.Companies/
+│   │   │   ├── 📄 Project: Kros.Esw.Companies.csproj
+│   │   │   └── 🧪 Tests: Kros.Esw.Companies.Tests
+│   │   ├── 📂 Kros.Esw.Authorization/
+│   │   │   ├── 📄 Project: Kros.Esw.Authorization.csproj
+│   │   │   └── 🧪 Tests: Kros.Esw.Authorization.Tests
+│   │   └── 📘 Solution Filter: Authorization.slnf
+│   ├── 📂 Catalog
+│   │   ├── 📄 Project: Kros.Esw.Catalog.csproj
+│   │   └── 🧪 Tests: Kros.Esw.Catalog.Tests
+│   │   └── 📘 Solution Filter: Catalog.slnf
+└── 📂 tests/
+    ├── 📂 ArchTests/
+    │   └── 🚀 Kros.Esw.ArchTests/
+    │       ├── 📄 Project: Kros.Esw.ArchTests.csproj
+    │       └── 🧪 Tests: Kros.Esw.ArchTests.Tests
+    └── 📂 Postman/
+        └── 📄 Authorization.json
+```
+
+### Rules for Project Structure
+1. **Directories:** Each service or library contains a project, unit tests, and a solution filter for faster project loading. However, the solution also contains tests in the /tests directory, which are part of the legacy structure. If you create tests for existing services, create them according to the old structure.
+2. **Code Integration:** 
+   - Never integrate an app service or function app directly into another service
+   - Before creating new file structure, make sure files being created do not exist elsewhere.
+   - First look for an appropriate library (lib) and then integrate it. If suitable library does not exist, create one.
+3. **New Projects:** When the user requests to create a new project, decline this request and tell them to create project file manualy and only after then you may proceed.
+
+### Build and Package Management
+- **Central Package Management**: When including external libraries, use central package management along with a Directory.Build.props file for managing package versions.
+- **Build System**: Use NUKE as the build system.
+- **Affected Projects**: Utilize dotnet-affected to identify impacted projects.
+
+## Performance Optimization
+- Implement code with consideration for its performance and efficient use of resources
+- Avoid unnecessary object allocations and inefficient algorithms
+
+## Documentation
+- Document all public classes and methods using XML documentation comments
+- Format: `/// <summary>...</summary>` and other relevant XML tags
