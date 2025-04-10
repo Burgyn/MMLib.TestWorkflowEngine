@@ -44,6 +44,9 @@ var n8n = builder.AddContainer("n8n", "n8nio/n8n:latest")
     })
     .WithReference(serviceBus);
 
+// Add integration service
+var integration = builder.AddProject<Projects.Integration>("integration")
+    .WithReference(serviceBus);
 //var elsaServer = builder.AddProject<Projects.ElsaServer>("elsa-server");
 
 //var elsaStudio = builder.AddProject<Projects.ElsaStudioBlazorWasm>("elsa-studio")
