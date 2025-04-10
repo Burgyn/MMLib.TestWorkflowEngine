@@ -1,23 +1,20 @@
-using Aspire.Hosting;
-
 var builder = DistributedApplication.CreateBuilder(args);
 
-// Add Azure Service Bus emulator
-var serviceBus = builder.AddContainer("servicebus", "mcr.microsoft.com/azure-messaging/servicebus-emulator")
-    .WithEndpoint(name: "servicebus", targetPort: 9354, port: 9354)
-    .WithEndpoint(name: "admin", targetPort: 9355, port: 9355)
-    .WithEndpoint(name: "amqp", targetPort: 5671, port: 5671)
-    .WithEnvironment("SERVICEBUS_QUEUE_NAME", "events")
-    .WithEnvironment("ACCEPT_EULA", "Y");
+// Set Aspire store path
+builder.Configuration["Aspire:Store:Path"] = Path.Combine(Directory.GetCurrentDirectory(), "aspire-store");
 
-// Add connection string for services
-builder.Configuration["ConnectionStrings:ServiceBus"] = "Endpoint=sb://localhost:5671;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=123456";
+// Add Azure Service Bus with emulator
+var serviceBus = builder.AddAzureServiceBus("messaging")
+    .RunAsEmulator();
 
-// Add services
-var invoices = builder.AddProject<Projects.Invoices>("invoices");
+// Add services with Service Bus reference
+var invoices = builder.AddProject<Projects.Invoices>("invoices")
+    .WithReference(serviceBus);
 
-var orders = builder.AddProject<Projects.Orders>("orders");
+var orders = builder.AddProject<Projects.Orders>("orders")
+    .WithReference(serviceBus);
 
-var tasks = builder.AddProject<Projects.Tasks>("tasks");
+var tasks = builder.AddProject<Projects.Tasks>("tasks")
+    .WithReference(serviceBus);
 
 builder.Build().Run();
