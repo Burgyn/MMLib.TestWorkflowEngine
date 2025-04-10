@@ -1,4 +1,4 @@
-@Orders_HostAddress = http://localhost:5150
+@Orders_HostAddress = https://localhost:7045
 
 ### Get all orders
 GET {{Orders_HostAddress}}/orders

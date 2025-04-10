@@ -19,7 +19,7 @@ builder.Services.AddSwaggerGen();
 // Configure n8n webhook URL
 builder.Services.Configure<N8nOptions>(options =>
 {
-    options.WebhookUrl = "http://n8n:5678/webhook-test/43a23d54-fcdf-497d-9b1f-0dace15cf79e";
+    options.WebhookUrl = "http://localhost:5678/webhook-test/43a23d54-fcdf-497d-9b1f-0dace15cf79e";
 });
 
 var app = builder.Build();
