@@ -4,6 +4,7 @@ using Invoices.Features.GetInvoices;
 using Invoices.Features.CreateInvoice;
 using Invoices.Features.PayInvoice;
 using Invoices.Infrastructure;
+using Invoices.Infrastructure.DomainEvents;
 
 namespace Invoices.Features;
 
@@ -13,6 +14,8 @@ public static class InvoiceFeatures
     {
         services.AddDbContext<InvoiceDbContext>(options =>
             options.UseInMemoryDatabase("InvoicesDb"));
+
+        services.AddSingleton<IEventPublisher, ServiceBusEventPublisher>();
 
         return services;
     }

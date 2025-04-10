@@ -4,6 +4,7 @@ using Orders.Features.GetOrders;
 using Orders.Features.CreateOrder;
 using Orders.Features.UpdateOrderStatus;
 using Orders.Infrastructure;
+using Orders.Infrastructure.DomainEvents;
 
 namespace Orders.Features;
 
@@ -14,6 +15,8 @@ public static class OrderFeatures
         services.AddDbContext<OrderDbContext>(options =>
             options.UseInMemoryDatabase("OrdersDb"));
 
+        services.AddSingleton<IEventPublisher, ServiceBusEventPublisher>();
+
         return services;
     }
 
@@ -21,8 +24,7 @@ public static class OrderFeatures
     {
         app.MapGetOrder()
            .MapGetOrders()
-           .MapCreateOrder()
-           .MapUpdateOrderStatus();
+           .MapCreateOrder();
 
         return app;
     }

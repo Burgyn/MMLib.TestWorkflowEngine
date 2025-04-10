@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Orders.Domain;
+using Orders.Domain.Events;
 using Orders.Infrastructure;
+using Orders.Infrastructure.DomainEvents;
 
 namespace Orders.Features.CreateOrder;
 
@@ -15,7 +17,10 @@ public static class CreateOrderEndpoint
         return app;
     }
 
-    private static async Task<Created<int>> CreateOrder(OrderDbContext dbContext, CreateOrderRequest request)
+    private static async Task<Created<int>> CreateOrder(
+        OrderDbContext dbContext,
+        IEventPublisher eventPublisher,
+        CreateOrderRequest request)
     {
         var order = new Order
         {
@@ -29,6 +34,15 @@ public static class CreateOrderEndpoint
 
         dbContext.Orders.Add(order);
         await dbContext.SaveChangesAsync();
+
+        // Publish domain event
+        await eventPublisher.PublishAsync(new OrderCreatedEvent(
+            order.Id,
+            order.CustomerName,
+            order.Description,
+            order.TotalAmount,
+            order.Status,
+            order.CreatedAt));
 
         return TypedResults.Created($"/orders/{order.Id}", order.Id);
     }

@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Invoices.Domain;
+using Invoices.Domain.Events;
 using Invoices.Infrastructure;
+using Invoices.Infrastructure.DomainEvents;
 
 namespace Invoices.Features.PayInvoice;
 
@@ -16,8 +18,9 @@ public static class PayInvoiceEndpoint
     }
 
     private static async Task<Results<NoContent, NotFound, BadRequest<string>>> PayInvoice(
-        InvoiceDbContext dbContext, 
-        int id, 
+        InvoiceDbContext dbContext,
+        IEventPublisher eventPublisher,
+        int id,
         PayInvoiceRequest request)
     {
         var invoice = await dbContext.Invoices.FindAsync(id);
@@ -37,6 +40,16 @@ public static class PayInvoiceEndpoint
         invoice.PaidAt = DateTime.UtcNow;
             
         await dbContext.SaveChangesAsync();
+
+        // Publish domain event
+        await eventPublisher.PublishAsync(new InvoicePaidEvent(
+            invoice.Id,
+            invoice.Number,
+            invoice.CustomerName,
+            invoice.TotalAmount,
+            invoice.PaymentReference!,
+            invoice.PaidAt!.Value));
+
         return TypedResults.NoContent();
     }
 } 

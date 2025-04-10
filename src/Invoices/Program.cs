@@ -1,9 +1,13 @@
 using Invoices.Features;
+using Aspire.Azure.Messaging.ServiceBus;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add service defaults (telemetry, health checks, etc.)
 builder.AddServiceDefaults();
+
+// Add Azure Service Bus
+builder.AddAzureServiceBusClient("ServiceBus");
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

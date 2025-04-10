@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Invoices.Domain;
+using Invoices.Domain.Events;
 using Invoices.Infrastructure;
+using Invoices.Infrastructure.DomainEvents;
 
 namespace Invoices.Features.CreateInvoice;
 
@@ -16,7 +18,10 @@ public static class CreateInvoiceEndpoint
         return app;
     }
 
-    private static async Task<Created<int>> CreateInvoice(InvoiceDbContext dbContext, CreateInvoiceRequest request)
+    private static async Task<Created<int>> CreateInvoice(
+        InvoiceDbContext dbContext,
+        IEventPublisher eventPublisher,
+        CreateInvoiceRequest request)
     {
         var lastInvoice = await dbContext.Invoices
             .OrderByDescending(i => i.Number)
@@ -44,6 +49,17 @@ public static class CreateInvoiceEndpoint
 
         dbContext.Invoices.Add(invoice);
         await dbContext.SaveChangesAsync();
+
+        // Publish domain event
+        await eventPublisher.PublishAsync(new InvoiceCreatedEvent(
+            invoice.Id,
+            invoice.Number,
+            invoice.CustomerName,
+            invoice.TotalAmount,
+            invoice.IssueDate,
+            invoice.DueDate,
+            invoice.Status,
+            invoice.CreatedAt));
 
         return TypedResults.Created($"/invoices/{invoice.Id}", invoice.Id);
     }
