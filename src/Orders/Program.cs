@@ -1,7 +1,9 @@
-using Microsoft.AspNetCore.OpenApi;
 using Orders.Features;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Add service defaults (telemetry, health checks, etc.)
+builder.AddServiceDefaults();
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -14,6 +16,8 @@ builder.Services.AddOrders(builder.Configuration);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.MapDefaultEndpoints(); // Health checks, etc.
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
