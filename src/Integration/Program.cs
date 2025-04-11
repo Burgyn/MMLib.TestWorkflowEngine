@@ -39,8 +39,11 @@ var serviceBusClient = app.Services.GetRequiredService<ServiceBusClient>();
 var httpClientFactory = app.Services.GetRequiredService<IHttpClientFactory>();
 var logger = app.Logger;
 var n8nHttpClient = httpClientFactory.CreateClient("n8n");
-var baseWebhookPath = "/webhook/43a23d54-fcdf-497d-9b1f-0dace15cf79e";
-//var baseWebhookPath = "/webhook-test/43a23d54-fcdf-497d-9b1f-0dace15cf79e";
+var webhookPaths = new[]
+{
+    "/webhook/43a23d54-fcdf-497d-9b1f-0dace15cf79e",
+    "/webhook-test/43a23d54-fcdf-497d-9b1f-0dace15cf79e"
+};
 
 // Create processor for each event type
 logger.LogInformation("Setting up processors for Service Bus topics...");
@@ -77,19 +80,29 @@ async Task CreateProcessor(string topicName, string subscriptionName, string eve
                 data = JsonSerializer.Deserialize<JsonElement>(body)
             };
 
-            // Send to n8n webhook
-            var webhookPath = $"{baseWebhookPath}/{topicName}";
-            logger.LogInformation("Sending to n8n webhook: {WebhookPath}", webhookPath);
+            // Send to both n8n webhooks
+            foreach (var basePath in webhookPaths)
+            {
+                try
+                {
+                    var webhookPath = $"{basePath}/{topicName}";
+                    logger.LogInformation("Sending to n8n webhook: {WebhookPath}", webhookPath);
 
-            var response = await n8nHttpClient.PostAsJsonAsync(webhookPath, payload);
-            var responseContent = await response.Content.ReadAsStringAsync();
+                    var response = await n8nHttpClient.PostAsJsonAsync(webhookPath, payload);
+                    var responseContent = await response.Content.ReadAsStringAsync();
 
-            logger.LogInformation(
-                "n8n response:\nStatus: {Status}\nContent: {Content}",
-                response.StatusCode, responseContent);
+                    logger.LogInformation(
+                        "n8n response:\nStatus: {Status}\nContent: {Content}",
+                        response.StatusCode, responseContent);
 
-            response.EnsureSuccessStatusCode();
-            logger.LogInformation("Successfully forwarded {EventType} event to n8n", eventType);
+                    response.EnsureSuccessStatusCode();
+                    logger.LogInformation("Successfully forwarded {EventType} event to n8n at {WebhookPath}", eventType, webhookPath);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "Error processing {EventType} event from topic {TopicName}", eventType, topicName);
+                }
+            }
         }
         catch (Exception ex)
         {

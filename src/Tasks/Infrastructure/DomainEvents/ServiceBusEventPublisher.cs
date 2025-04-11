@@ -27,7 +27,7 @@ public class ServiceBusEventPublisher : IEventPublisher
     public async Task PublishAsync<T>(T @event, CancellationToken cancellationToken = default) where T : class
     {
         var eventType = typeof(T).Name;
-        
+
         if (!_senders.TryGetValue(eventType, out var sender))
         {
             throw new ArgumentException($"Unknown event type: {eventType}");
@@ -47,7 +47,7 @@ public class ServiceBusEventPublisher : IEventPublisher
         {
             sender.DisposeAsync().AsTask().Wait();
         }
-        
+
         _client.DisposeAsync().AsTask().Wait();
     }
-} 
+}
