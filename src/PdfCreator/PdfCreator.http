@@ -1,0 +1,36 @@
+@PdfCreator_HostAddress = http://localhost:5059
+
+GET {{PdfCreator_HostAddress}}/weatherforecast/
+Accept: application/json
+
+### Generate PDF from invoice
+POST {{PdfCreator_HostAddress}}/api/invoices/generate-pdf
+Content-Type: application/json
+
+{
+    "id": 0,
+    "number": "2024001",
+    "customerName": "ACME, s.r.o.",
+    "issueDate": "2024-03-19",
+    "dueDate": "2024-04-02",
+    "paymentReference": "2024001",
+    "orderId": 123,
+    "status": 0,
+    "createdAt": "2024-03-19T10:00:00",
+    "items": [
+        {
+            "description": "Programátorské práce",
+            "quantity": 25,
+            "unitPrice": 50.00,
+            "unit": "hod"
+        },
+        {
+            "description": "Konzultácie",
+            "quantity": 5,
+            "unitPrice": 60.00,
+            "unit": "hod"
+        }
+    ]
+}
+
+###

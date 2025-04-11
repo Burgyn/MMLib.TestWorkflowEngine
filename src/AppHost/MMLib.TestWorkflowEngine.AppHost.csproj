@@ -18,6 +18,7 @@
 		<ProjectReference Include="..\Integration\Integration.csproj" />
 		<ProjectReference Include="..\Invoices\Invoices.csproj" />
 		<ProjectReference Include="..\Orders\Orders.csproj" />
+		<ProjectReference Include="..\PdfCreator\PdfCreator.csproj" />
 		<ProjectReference Include="..\Tasks\Tasks.csproj" />
 		<ProjectReference Include="..\ElsaServer\ElsaServer.csproj" />
 		<ProjectReference Include="..\ElsaStudioBlazorWasm\ElsaStudioBlazorWasm.csproj" />

@@ -46,6 +46,9 @@ var orders = builder.AddProject<Projects.Orders>("orders")
 var tasks = builder.AddProject<Projects.Tasks>("tasks")
     .WithReference(serviceBus);
 
+// Add PDF Creator service
+var pdfCreator = builder.AddProject<Projects.PdfCreator>("pdf-creator");
+
 // Add n8n as Docker container
 var n8n = builder.AddContainer("n8n", "n8nio/n8n:latest")
     .WithEnvironment("N8N_ENCRYPTION_KEY", "your-secure-encryption-key-here")
