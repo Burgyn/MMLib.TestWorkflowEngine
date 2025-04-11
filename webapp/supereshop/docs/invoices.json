@@ -206,61 +206,11 @@
             "type": "number",
             "format": "double"
           },
-          "issueDate": {
-            "type": "string",
-            "format": "date-time"
+          "paidAmount": {
+            "type": "number",
+            "format": "double"
           },
-          "dueDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "paymentReference": {
-            "type": "string",
-            "nullable": true
-          },
-          "orderId": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "status": {
-            "$ref": "#/components/schemas/InvoiceStatus"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "paidAt": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/InvoiceItemResponse"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "GetInvoicesResponse": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "number": {
-            "type": "string",
-            "nullable": true
-          },
-          "customerName": {
-            "type": "string",
-            "nullable": true
-          },
-          "totalAmount": {
+          "remainingAmount": {
             "type": "number",
             "format": "double"
           },
@@ -297,6 +247,86 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/InvoiceItemResponse"
+            },
+            "nullable": true
+          },
+          "payments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InvoicePaymentResponse"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetInvoicesResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "number": {
+            "type": "string",
+            "nullable": true
+          },
+          "customerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "paidAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "remainingAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "issueDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "paymentReference": {
+            "type": "string",
+            "nullable": true
+          },
+          "orderId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "status": {
+            "$ref": "#/components/schemas/InvoiceStatus"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "paidAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InvoiceItemResponse"
+            },
+            "nullable": true
+          },
+          "payments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InvoicePaymentResponse"
             },
             "nullable": true
           }
@@ -329,11 +359,36 @@
         },
         "additionalProperties": false
       },
+      "InvoicePaymentResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "paymentReference": {
+            "type": "string",
+            "nullable": true
+          },
+          "paidAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
       "InvoiceStatus": {
         "enum": [
           0,
           1,
-          2
+          2,
+          3,
+          4,
+          5
         ],
         "type": "integer",
         "format": "int32"
@@ -341,6 +396,10 @@
       "PayInvoiceRequest": {
         "type": "object",
         "properties": {
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
           "paymentReference": {
             "type": "string",
             "nullable": true
