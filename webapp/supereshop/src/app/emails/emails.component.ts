@@ -34,12 +34,12 @@ export class EmailsComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.sendEmail(result);
+        this.sendEmail(result.sender, result.message);
       }
     });
   }
 
-  private sendEmail(message: string): void {
+  private sendEmail(sender: string, message: string): void {
     const webhookUrl = 'http://localhost:5678/webhook/a93639b3-b5af-4271-8134-cd2a4fb5b51f/email';
 
     fetch(webhookUrl, {
@@ -47,7 +47,7 @@ export class EmailsComponent {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ message })
+      body: JSON.stringify({ sender, message })
     }).then(() => {
       this.showConfetti();
       this.snackBar.open('Email bol úspešne odoslaný!', 'Zavrieť', {

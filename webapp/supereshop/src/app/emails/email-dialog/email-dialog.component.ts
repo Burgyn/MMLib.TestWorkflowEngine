@@ -29,13 +29,17 @@ export class EmailDialogComponent {
     private fb: FormBuilder
   ) {
     this.emailForm = this.fb.group({
+      sender: ['', [Validators.required, Validators.email]],
       message: ['', [Validators.required, Validators.minLength(1)]]
     });
   }
 
   onSubmit(): void {
     if (this.emailForm.valid) {
-      this.dialogRef.close(this.emailForm.value.message);
+      this.dialogRef.close({
+        sender: this.emailForm.value.sender,
+        message: this.emailForm.value.message
+      });
     }
   }
 

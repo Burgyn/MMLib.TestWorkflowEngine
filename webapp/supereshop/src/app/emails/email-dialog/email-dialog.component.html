@@ -3,6 +3,17 @@
 <mat-dialog-content>
   <form [formGroup]="emailForm">
     <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Odosielateľ</mat-label>
+      <input matInput formControlName="sender" placeholder="email@example.com">
+      <mat-error *ngIf="emailForm.get('sender')?.hasError('required')">
+        Odosielateľ je povinný
+      </mat-error>
+      <mat-error *ngIf="emailForm.get('sender')?.hasError('email')">
+        Zadajte platnú emailovú adresu
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
       <mat-label>Správa</mat-label>
       <textarea matInput formControlName="message" rows="5" placeholder="Zadajte správu..."></textarea>
       <mat-error *ngIf="emailForm.get('message')?.hasError('required')">
