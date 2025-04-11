@@ -21,3 +21,9 @@
 .mat-mdc-cell, .mat-mdc-header-cell {
   padding: 0.5rem;
 }
+
+.fab-button {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+}

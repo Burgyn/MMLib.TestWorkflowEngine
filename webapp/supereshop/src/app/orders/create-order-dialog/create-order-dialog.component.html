@@ -1,0 +1,45 @@
+<h2 mat-dialog-title>Nová objednávka</h2>
+
+<form [formGroup]="orderForm" (ngSubmit)="onSubmit()">
+  <mat-dialog-content>
+    <div class="form-fields">
+      <mat-form-field appearance="outline">
+        <mat-label>Zákazník</mat-label>
+        <input matInput formControlName="customerName" placeholder="Meno zákazníka">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Popis</mat-label>
+        <textarea matInput formControlName="description" placeholder="Popis objednávky" rows="3"></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Jednotková cena</mat-label>
+        <input matInput type="number" formControlName="unitPrice" placeholder="0.00">
+        <span matTextSuffix>€</span>
+        <mat-error *ngIf="orderForm.get('unitPrice')?.errors?.['required']">
+          Jednotková cena je povinná
+        </mat-error>
+        <mat-error *ngIf="orderForm.get('unitPrice')?.errors?.['min']">
+          Cena musí byť väčšia ako 0
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Množstvo</mat-label>
+        <input matInput type="number" formControlName="quantity" placeholder="1">
+        <mat-error *ngIf="orderForm.get('quantity')?.errors?.['required']">
+          Množstvo je povinné
+        </mat-error>
+        <mat-error *ngIf="orderForm.get('quantity')?.errors?.['min']">
+          Množstvo musí byť aspoň 1
+        </mat-error>
+      </mat-form-field>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="onCancel()">Zrušiť</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="!orderForm.valid">Vytvoriť</button>
+  </mat-dialog-actions>
+</form>
