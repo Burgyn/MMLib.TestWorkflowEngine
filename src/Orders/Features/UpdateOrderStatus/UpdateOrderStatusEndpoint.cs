@@ -1,5 +1,8 @@
 using Microsoft.AspNetCore.Http.HttpResults;
+using Orders.Domain;
+using Orders.Domain.Events;
 using Orders.Infrastructure;
+using Orders.Infrastructure.DomainEvents;
 
 namespace Orders.Features.UpdateOrderStatus;
 
@@ -16,6 +19,7 @@ public static class UpdateOrderStatusEndpoint
 
     private static async Task<Results<NoContent, NotFound>> UpdateStatus(
         OrderDbContext dbContext,
+        IEventPublisher eventPublisher,
         int id,
         UpdateOrderStatusRequest request)
     {
@@ -30,6 +34,17 @@ public static class UpdateOrderStatusEndpoint
         order.LastModifiedAt = DateTime.UtcNow;
 
         await dbContext.SaveChangesAsync();
+
+        // Publish domain event
+        await eventPublisher.PublishAsync(new OrderStatusChangedEvent(
+            order.Id,
+            order.CustomerName,
+            order.Description,
+            order.TotalAmount,
+            order.Status,
+            order.CreatedAt,
+            order.LastModifiedAt!.Value));
+
         return TypedResults.NoContent();
     }
 }

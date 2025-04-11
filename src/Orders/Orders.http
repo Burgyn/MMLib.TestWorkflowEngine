@@ -37,3 +37,11 @@ Content-Type: application/json
 {
     "newStatus": "InProgress"
 }
+
+### Complete order
+POST {{Orders_HostAddress}}/orders/1/complete
+Content-Type: application/json
+
+{
+    "completedAt": "2024-03-15T14:30:00Z"
+}

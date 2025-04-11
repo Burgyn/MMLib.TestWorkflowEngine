@@ -3,6 +3,7 @@ using Orders.Features.GetOrder;
 using Orders.Features.GetOrders;
 using Orders.Features.CreateOrder;
 using Orders.Features.UpdateOrderStatus;
+using Orders.Features.CompleteOrder;
 using Orders.Infrastructure;
 using Orders.Infrastructure.DomainEvents;
 
@@ -24,7 +25,9 @@ public static class OrderFeatures
     {
         app.MapGetOrder()
            .MapGetOrders()
-           .MapCreateOrder();
+           .MapCreateOrder()
+           .MapUpdateOrderStatus()
+           .MapCompleteOrder();
 
         return app;
     }
