@@ -31,6 +31,18 @@
         <td mat-cell *matCellDef="let invoice">{{invoice.totalAmount | currency:'EUR'}}</td>
       </ng-container>
 
+      <!-- Paid Amount Column -->
+      <ng-container matColumnDef="paidAmount">
+        <th mat-header-cell *matHeaderCellDef>Uhradená suma</th>
+        <td mat-cell *matCellDef="let invoice">{{invoice.paidAmount | currency:'EUR'}}</td>
+      </ng-container>
+
+      <!-- Remaining Amount Column -->
+      <ng-container matColumnDef="remainingAmount">
+        <th mat-header-cell *matHeaderCellDef>Zostávajúca suma</th>
+        <td mat-cell *matCellDef="let invoice">{{invoice.remainingAmount | currency:'EUR'}}</td>
+      </ng-container>
+
       <!-- Issue Date Column -->
       <ng-container matColumnDef="issueDate">
         <th mat-header-cell *matHeaderCellDef>Dátum vystavenia</th>
@@ -65,6 +77,13 @@
                   *ngIf="invoice.items && invoice.items.length > 0"
                   matTooltip="Zobraziť položky">
             <mat-icon>list</mat-icon>
+          </button>
+          <button mat-icon-button
+                  color="primary"
+                  (click)="viewPayments(invoice)"
+                  *ngIf="invoice.payments && invoice.payments.length > 0"
+                  matTooltip="Zobraziť uhrady">
+            <mat-icon>payments</mat-icon>
           </button>
         </td>
       </ng-container>

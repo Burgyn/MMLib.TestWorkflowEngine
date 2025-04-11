@@ -5,8 +5,7 @@
 .loading-spinner {
   display: flex;
   justify-content: center;
-  align-items: center;
-  padding: 2rem;
+  padding: 20px;
 }
 
 .mat-mdc-row:hover {
@@ -23,27 +22,51 @@
 }
 
 /* Invoice state colors */
-.state-new {
-  background-color: rgba(33, 150, 243, 0.05);
+.state-created {
+  background-color: #e3f2fd;
+}
+
+.state-sent {
+  background-color: #fff3e0;
+}
+
+.state-unpaid {
+  background-color: #ffebee;
+}
+
+.state-partially-paid {
+  background-color: #fff8e1;
 }
 
 .state-paid {
-  background-color: rgba(76, 175, 80, 0.05);
+  background-color: #e8f5e9;
 }
 
-.state-cancelled {
-  background-color: rgba(244, 67, 54, 0.05);
+.state-overpaid {
+  background-color: #f3e5f5;
 }
 
 /* Hover effects for states */
-.state-new:hover {
+.state-created:hover {
   background-color: rgba(33, 150, 243, 0.1);
+}
+
+.state-sent:hover {
+  background-color: rgba(76, 175, 80, 0.1);
+}
+
+.state-unpaid:hover {
+  background-color: rgba(244, 67, 54, 0.1);
+}
+
+.state-partially-paid:hover {
+  background-color: rgba(244, 67, 54, 0.1);
 }
 
 .state-paid:hover {
   background-color: rgba(76, 175, 80, 0.1);
 }
 
-.state-cancelled:hover {
+.state-overpaid:hover {
   background-color: rgba(244, 67, 54, 0.1);
 }

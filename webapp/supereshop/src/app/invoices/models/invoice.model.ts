@@ -1,7 +1,10 @@
 export enum InvoiceStatus {
-  New = 0,
-  Paid = 1,
-  Cancelled = 2
+  Created = 0,
+  Sent = 1,
+  Unpaid = 2,
+  PartiallyPaid = 3,
+  Paid = 4,
+  Overpaid = 5
 }
 
 export interface InvoiceItem {
@@ -12,11 +15,20 @@ export interface InvoiceItem {
   totalAmount: number;
 }
 
+export interface InvoicePayment {
+  id: number;
+  amount: number;
+  paymentReference: string;
+  paidAt: string;
+}
+
 export interface Invoice {
   id: number;
   number: string | null;
   customerName: string | null;
   totalAmount: number;
+  paidAmount: number;
+  remainingAmount: number;
   issueDate: string;
   dueDate: string;
   paymentReference: string | null;
@@ -25,21 +37,23 @@ export interface Invoice {
   createdAt: string;
   paidAt: string | null;
   items: InvoiceItem[] | null;
+  payments: InvoicePayment[] | null;
 }
 
 export interface CreateInvoiceItemRequest {
-  description: string | null;
+  description: string;
   unitPrice: number;
   quantity: number;
 }
 
 export interface CreateInvoiceRequest {
-  customerName: string | null;
+  customerName: string;
   dueDate: string;
-  items: CreateInvoiceItemRequest[] | null;
-  orderId: number | null;
+  items: CreateInvoiceItemRequest[];
+  orderId?: number;
 }
 
 export interface PayInvoiceRequest {
+  amount: number;
   paymentReference: string | null;
 }

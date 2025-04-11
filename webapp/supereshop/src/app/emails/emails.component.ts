@@ -40,7 +40,7 @@ export class EmailsComponent {
   }
 
   private sendEmail(message: string): void {
-    const webhookUrl = 'http://localhost:5678/webhook-test/a93639b3-b5af-4271-8134-cd2a4fb5b51f/email';
+    const webhookUrl = 'http://localhost:5678/webhook/a93639b3-b5af-4271-8134-cd2a4fb5b51f/email';
 
     fetch(webhookUrl, {
       method: 'POST',

@@ -1,0 +1,30 @@
+<h2 mat-dialog-title>Uhrady faktúry</h2>
+
+<mat-dialog-content>
+  <table mat-table [dataSource]="payments" class="payments-table">
+    <!-- Amount Column -->
+    <ng-container matColumnDef="amount">
+      <th mat-header-cell *matHeaderCellDef>Suma</th>
+      <td mat-cell *matCellDef="let payment">{{payment.amount | currency:'EUR'}}</td>
+    </ng-container>
+
+    <!-- Payment Reference Column -->
+    <ng-container matColumnDef="paymentReference">
+      <th mat-header-cell *matHeaderCellDef>Referencia platby</th>
+      <td mat-cell *matCellDef="let payment">{{payment.paymentReference}}</td>
+    </ng-container>
+
+    <!-- Paid At Column -->
+    <ng-container matColumnDef="paidAt">
+      <th mat-header-cell *matHeaderCellDef>Dátum platby</th>
+      <td mat-cell *matCellDef="let payment">{{payment.paidAt | date:'short'}}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onClose()">Zavrieť</button>
+</mat-dialog-actions>
