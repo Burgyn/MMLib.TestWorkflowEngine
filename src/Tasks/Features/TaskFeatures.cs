@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Tasks.Features.GetTask;
 using Tasks.Features.GetTasks;
 using Tasks.Features.CreateTask;
+using Tasks.Features.CompleteTask;
 using Tasks.Infrastructure;
 using Tasks.Infrastructure.DomainEvents;
 
@@ -23,7 +24,8 @@ public static class TaskFeatures
     {
         app.MapGetTask()
            .MapGetTasks()
-           .MapCreateTask();
+           .MapCreateTask()
+           .MapCompleteTask();
 
         return app;
     }
