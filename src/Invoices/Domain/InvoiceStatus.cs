@@ -4,5 +4,8 @@ public enum InvoiceStatus
 {
     Created,
     Sent,
-    Paid
+    Unpaid,
+    PartiallyPaid,
+    Paid,
+    Overpaid
 } 

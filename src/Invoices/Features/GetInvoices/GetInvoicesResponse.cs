@@ -8,6 +8,8 @@ public record GetInvoicesResponse(
     string Number,
     string CustomerName,
     decimal TotalAmount,
+    decimal PaidAmount,
+    decimal RemainingAmount,
     DateTime IssueDate,
     DateTime DueDate,
     string? PaymentReference,
@@ -15,4 +17,5 @@ public record GetInvoicesResponse(
     InvoiceStatus Status,
     DateTime CreatedAt,
     DateTime? PaidAt,
-    IReadOnlyList<InvoiceItemResponse> Items); 
+    IReadOnlyList<InvoiceItemResponse> Items,
+    IReadOnlyList<InvoicePaymentResponse> Payments); 

@@ -5,5 +5,7 @@ public record InvoicePaidEvent(
     string Number,
     string CustomerName,
     decimal TotalAmount,
+    decimal TotalPaidAmount,
+    decimal PaymentAmount,
     string PaymentReference,
     DateTime PaidAt); 

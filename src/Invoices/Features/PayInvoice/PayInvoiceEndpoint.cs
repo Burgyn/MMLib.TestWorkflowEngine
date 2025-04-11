@@ -30,15 +30,12 @@ public static class PayInvoiceEndpoint
             return TypedResults.NotFound();
         }
 
-        if (invoice.Status == InvoiceStatus.Paid)
+        if (request.Amount <= 0)
         {
-            return TypedResults.BadRequest("Invoice is already paid.");
+            return TypedResults.BadRequest("Payment amount must be greater than zero.");
         }
 
-        invoice.Status = InvoiceStatus.Paid;
-        invoice.PaymentReference = request.PaymentReference;
-        invoice.PaidAt = DateTime.UtcNow;
-            
+        invoice.AddPayment(request.Amount, request.PaymentReference);
         await dbContext.SaveChangesAsync();
 
         // Publish domain event
@@ -47,8 +44,10 @@ public static class PayInvoiceEndpoint
             invoice.Number,
             invoice.CustomerName,
             invoice.TotalAmount,
-            invoice.PaymentReference!,
-            invoice.PaidAt!.Value));
+            invoice.PaidAmount,
+            request.Amount,
+            request.PaymentReference,
+            DateTime.UtcNow));
 
         return TypedResults.NoContent();
     }

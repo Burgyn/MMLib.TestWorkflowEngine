@@ -20,12 +20,15 @@ public static class GetInvoiceEndpoint
     {
         var invoice = await dbContext.Invoices
             .Include(i => i.Items)
+            .Include(i => i.Payments)
             .Where(i => i.Id == id)
             .Select(i => new GetInvoiceResponse(
                 i.Id,
                 i.Number,
                 i.CustomerName,
                 i.TotalAmount,
+                i.PaidAmount,
+                i.RemainingAmount,
                 i.IssueDate,
                 i.DueDate,
                 i.PaymentReference,
@@ -38,7 +41,12 @@ public static class GetInvoiceEndpoint
                     item.Description,
                     item.UnitPrice,
                     item.Quantity,
-                    item.TotalAmount)).ToList()))
+                    item.TotalAmount)).ToList(),
+                i.Payments.Select(p => new InvoicePaymentResponse(
+                    p.Id,
+                    p.Amount,
+                    p.PaymentReference,
+                    p.PaidAt)).ToList()))
             .FirstOrDefaultAsync();
 
         if (invoice is null)

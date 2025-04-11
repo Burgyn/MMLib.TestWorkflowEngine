@@ -1,3 +1,5 @@
 namespace Invoices.Features.PayInvoice;
 
-public record PayInvoiceRequest(string PaymentReference); 
+public record PayInvoiceRequest(
+    decimal Amount,
+    string PaymentReference); 

@@ -11,6 +11,7 @@ public class InvoiceDbContext : DbContext
 
     public DbSet<Invoice> Invoices => Set<Invoice>();
     public DbSet<InvoiceItem> InvoiceItems => Set<InvoiceItem>();
+    public DbSet<InvoicePayment> InvoicePayments => Set<InvoicePayment>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -18,6 +19,12 @@ public class InvoiceDbContext : DbContext
             .HasMany(i => i.Items)
             .WithOne(i => i.Invoice)
             .HasForeignKey(i => i.InvoiceId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Invoice>()
+            .HasMany(i => i.Payments)
+            .WithOne(p => p.Invoice)
+            .HasForeignKey(p => p.InvoiceId)
             .OnDelete(DeleteBehavior.Cascade);
 
         // Seed data
@@ -28,7 +35,7 @@ public class InvoiceDbContext : DbContext
             CustomerName = "Peter Novák",
             IssueDate = DateTime.UtcNow.AddDays(-15),
             DueDate = DateTime.UtcNow.AddDays(15),
-            Status = InvoiceStatus.Sent,
+            Status = InvoiceStatus.Unpaid,
             CreatedAt = DateTime.UtcNow.AddDays(-15),
             OrderId = 1
         };
@@ -52,13 +59,24 @@ public class InvoiceDbContext : DbContext
             CustomerName = "Martin Horváth",
             IssueDate = DateTime.UtcNow.AddDays(-30),
             DueDate = DateTime.UtcNow,
-            PaymentReference = "PO-2024-123",
             Status = InvoiceStatus.Paid,
             CreatedAt = DateTime.UtcNow.AddDays(-30),
-            PaidAt = DateTime.UtcNow.AddDays(-5)
+            PaidAt = DateTime.UtcNow.AddDays(-5),
+            PaidAmount = 1399.98m
         };
 
         modelBuilder.Entity<Invoice>().HasData(invoice1, invoice2, invoice3);
+
+        modelBuilder.Entity<InvoicePayment>().HasData(
+            new InvoicePayment
+            {
+                Id = 1,
+                InvoiceId = 3,
+                Amount = 1399.98m,
+                PaymentReference = "PO-2024-123",
+                PaidAt = DateTime.UtcNow.AddDays(-5)
+            }
+        );
 
         modelBuilder.Entity<InvoiceItem>().HasData(
             new InvoiceItem 
