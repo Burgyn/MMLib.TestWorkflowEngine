@@ -29,7 +29,8 @@ public class InvoiceDbContext : DbContext
             IssueDate = DateTime.UtcNow.AddDays(-15),
             DueDate = DateTime.UtcNow.AddDays(15),
             Status = InvoiceStatus.Sent,
-            CreatedAt = DateTime.UtcNow.AddDays(-15)
+            CreatedAt = DateTime.UtcNow.AddDays(-15),
+            OrderId = 1
         };
 
         var invoice2 = new Invoice
@@ -40,7 +41,8 @@ public class InvoiceDbContext : DbContext
             IssueDate = DateTime.UtcNow.AddDays(-10),
             DueDate = DateTime.UtcNow.AddDays(20),
             Status = InvoiceStatus.Created,
-            CreatedAt = DateTime.UtcNow.AddDays(-10)
+            CreatedAt = DateTime.UtcNow.AddDays(-10),
+            OrderId = 2
         };
 
         var invoice3 = new Invoice

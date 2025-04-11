@@ -39,6 +39,7 @@ public static class CreateInvoiceEndpoint
             DueDate = request.DueDate,
             Status = InvoiceStatus.Created,
             CreatedAt = DateTime.UtcNow,
+            OrderId = request.OrderId,
             Items = request.Items.Select(item => new InvoiceItem
             {
                 Description = item.Description,
@@ -59,7 +60,8 @@ public static class CreateInvoiceEndpoint
             invoice.IssueDate,
             invoice.DueDate,
             invoice.Status,
-            invoice.CreatedAt));
+            invoice.CreatedAt,
+            invoice.OrderId));
 
         return TypedResults.Created($"/invoices/{invoice.Id}", invoice.Id);
     }

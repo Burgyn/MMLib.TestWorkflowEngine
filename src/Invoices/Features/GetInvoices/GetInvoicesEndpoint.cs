@@ -28,6 +28,7 @@ public static class GetInvoicesEndpoint
                 i.IssueDate,
                 i.DueDate,
                 i.PaymentReference,
+                i.OrderId,
                 i.Status,
                 i.CreatedAt,
                 i.PaidAt,

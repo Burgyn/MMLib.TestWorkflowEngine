@@ -11,6 +11,7 @@ public record GetInvoicesResponse(
     DateTime IssueDate,
     DateTime DueDate,
     string? PaymentReference,
+    int? OrderId,
     InvoiceStatus Status,
     DateTime CreatedAt,
     DateTime? PaidAt,
