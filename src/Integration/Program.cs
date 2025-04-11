@@ -9,18 +9,19 @@ builder.AddServiceDefaults();
 // Add Azure Service Bus
 builder.AddAzureServiceBusClient("messaging");
 
+// Add n8n service reference with service discovery
+builder.Services.AddHttpClient("n8n", client =>
+{
+    var n8nUri = "http://localhost:5678";
+    client.BaseAddress = new Uri(n8nUri);
+});
+
 // Add HttpClient
 builder.Services.AddHttpClient();
 
 // Add services to the container
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-// Configure n8n webhook URL
-builder.Services.Configure<N8nOptions>(options =>
-{
-    options.WebhookUrl = "http://localhost:5678/webhook-test/43a23d54-fcdf-497d-9b1f-0dace15cf79e";
-});
 
 var app = builder.Build();
 
@@ -37,7 +38,8 @@ if (app.Environment.IsDevelopment())
 var serviceBusClient = app.Services.GetRequiredService<ServiceBusClient>();
 var httpClientFactory = app.Services.GetRequiredService<IHttpClientFactory>();
 var logger = app.Logger;
-var n8nOptions = app.Services.GetRequiredService<Microsoft.Extensions.Options.IOptions<N8nOptions>>().Value;
+var n8nHttpClient = httpClientFactory.CreateClient("n8n");
+var n8nWebhookPath = "/webhook-test/43a23d54-fcdf-497d-9b1f-0dace15cf79e";
 
 // Create processor for each subscription
 await CreateProcessor("orders-subscription", "Orders");
@@ -71,9 +73,8 @@ async Task CreateProcessor(string subscriptionName, string source)
                 }
             };
 
-            // Forward to n8n
-            using var httpClient = httpClientFactory.CreateClient();
-            var response = await httpClient.PostAsJsonAsync(n8nOptions.WebhookUrl, payload);
+            // Forward to n8n using the named client
+            var response = await n8nHttpClient.PostAsJsonAsync(n8nWebhookPath, payload);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -99,8 +100,3 @@ async Task CreateProcessor(string subscriptionName, string source)
 }
 
 app.Run();
-
-public class N8nOptions
-{
-    public string WebhookUrl { get; set; } = string.Empty;
-}
