@@ -398,3 +398,34 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Angular specific
+src/webapp/supereshop/.angular/
+src/webapp/supereshop/dist/
+src/webapp/supereshop/tmp/
+src/webapp/supereshop/out-tsc/
+src/webapp/supereshop/bazel-out/
+src/webapp/supereshop/node_modules/
+src/webapp/supereshop/npm-debug.log
+src/webapp/supereshop/yarn-error.log
+src/webapp/supereshop/.idea/
+src/webapp/supereshop/.project
+src/webapp/supereshop/.classpath
+src/webapp/supereshop/.c9/
+src/webapp/supereshop/*.launch
+src/webapp/supereshop/.settings/
+src/webapp/supereshop/*.sublime-workspace
+src/webapp/supereshop/.vscode/*
+!src/webapp/supereshop/.vscode/settings.json
+!src/webapp/supereshop/.vscode/tasks.json
+!src/webapp/supereshop/.vscode/launch.json
+!src/webapp/supereshop/.vscode/extensions.json
+src/webapp/supereshop/.history/*
+src/webapp/supereshop/.sass-cache/
+src/webapp/supereshop/connect.lock
+src/webapp/supereshop/coverage/
+src/webapp/supereshop/libpeerconnection.log
+src/webapp/supereshop/testem.log
+src/webapp/supereshop/typings/
+src/webapp/supereshop/.DS_Store
+src/webapp/supereshop/Thumbs.db
