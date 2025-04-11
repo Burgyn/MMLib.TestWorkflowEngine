@@ -8,4 +8,4 @@ public record InvoiceCreatedEvent(
     DateTime IssueDate,
     DateTime DueDate,
     InvoiceStatus Status,
-    DateTime CreatedAt); 
+    DateTime CreatedAt);

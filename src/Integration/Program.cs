@@ -39,64 +39,72 @@ var serviceBusClient = app.Services.GetRequiredService<ServiceBusClient>();
 var httpClientFactory = app.Services.GetRequiredService<IHttpClientFactory>();
 var logger = app.Logger;
 var n8nHttpClient = httpClientFactory.CreateClient("n8n");
-var n8nWebhookPath = "/webhook-test/43a23d54-fcdf-497d-9b1f-0dace15cf79e";
+var baseWebhookPath = "/webhook/43a23d54-fcdf-497d-9b1f-0dace15cf79e";
+//var baseWebhookPath = "/webhook-test/43a23d54-fcdf-497d-9b1f-0dace15cf79e";
 
-// Create processor for each subscription
-await CreateProcessor("orders-subscription", "Orders");
-await CreateProcessor("invoices-subscription", "Invoices");
-await CreateProcessor("tasks-subscription", "Tasks");
+// Create processor for each event type
+logger.LogInformation("Setting up processors for Service Bus topics...");
 
-async Task CreateProcessor(string subscriptionName, string source)
+await CreateProcessor("order-created", "order-created-sub", "OrderCreated");
+await CreateProcessor("order-status-changed", "order-status-changed-sub", "OrderStatusChanged");
+await CreateProcessor("invoice-created", "invoice-created-sub", "InvoiceCreated");
+await CreateProcessor("invoice-paid", "invoice-paid-sub", "InvoicePaid");
+await CreateProcessor("task-created", "task-created-sub", "TaskCreated");
+await CreateProcessor("task-completed", "task-completed-sub", "TaskCompleted");
+
+logger.LogInformation("All processors are set up and running");
+
+async Task CreateProcessor(string topicName, string subscriptionName, string eventType)
 {
-    var processor = serviceBusClient.CreateProcessor("domain-events", subscriptionName);
+    logger.LogInformation("Creating processor for topic: {TopicName}, subscription: {SubscriptionName}",
+        topicName, subscriptionName);
+
+    var processor = serviceBusClient.CreateProcessor(topicName, subscriptionName);
 
     processor.ProcessMessageAsync += async args =>
     {
         try
         {
             var body = args.Message.Body.ToString();
-            logger.LogInformation("Received message from {Source}: {Body}", source, body);
+            logger.LogInformation(
+                "Received message:\nType: {EventType}\nTopic: {TopicName}\nSubscription: {SubscriptionName}\nBody: {Body}",
+                eventType, topicName, subscriptionName, body);
 
             // Create payload for n8n
             var payload = new
             {
-                source = source,
-                messageId = args.Message.MessageId,
-                correlationId = args.Message.CorrelationId,
-                data = JsonSerializer.Deserialize<JsonElement>(body),
-                metadata = new
-                {
-                    enqueuedTime = args.Message.EnqueuedTime,
-                    sequenceNumber = args.Message.SequenceNumber,
-                    subject = args.Message.Subject,
-                    contentType = args.Message.ContentType
-                }
+                type = eventType,
+                data = JsonSerializer.Deserialize<JsonElement>(body)
             };
 
-            // Forward to n8n using the named client
-            var response = await n8nHttpClient.PostAsJsonAsync(n8nWebhookPath, payload);
+            // Send to n8n webhook
+            var webhookPath = $"{baseWebhookPath}/{topicName}";
+            logger.LogInformation("Sending to n8n webhook: {WebhookPath}", webhookPath);
 
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception($"Failed to forward message to n8n. Status code: {response.StatusCode}");
-            }
+            var response = await n8nHttpClient.PostAsJsonAsync(webhookPath, payload);
+            var responseContent = await response.Content.ReadAsStringAsync();
 
-            logger.LogInformation("Successfully forwarded message to n8n");
+            logger.LogInformation(
+                "n8n response:\nStatus: {Status}\nContent: {Content}",
+                response.StatusCode, responseContent);
+
+            response.EnsureSuccessStatusCode();
+            logger.LogInformation("Successfully forwarded {EventType} event to n8n", eventType);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error processing message from {Source}", source);
-            throw;
+            logger.LogError(ex, "Error processing {EventType} event from topic {TopicName}", eventType, topicName);
         }
     };
 
     processor.ProcessErrorAsync += args =>
     {
-        logger.LogError(args.Exception, "Error in processor for {Source}", source);
+        logger.LogError(args.Exception, "Error in processor for topic {TopicName}", topicName);
         return Task.CompletedTask;
     };
 
     await processor.StartProcessingAsync();
+    logger.LogInformation("Started processor for topic: {TopicName}", topicName);
 }
 
 app.Run();
