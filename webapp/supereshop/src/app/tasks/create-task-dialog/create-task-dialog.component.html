@@ -1,0 +1,47 @@
+<h2 mat-dialog-title>Nová úloha</h2>
+
+<form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
+  <mat-dialog-content>
+    <div class="form-fields">
+      <mat-form-field appearance="outline">
+        <mat-label>Email zodpovednej osoby</mat-label>
+        <input matInput formControlName="assigneeEmail" placeholder="email@example.com" type="email">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Popis</mat-label>
+        <textarea matInput formControlName="description" placeholder="Popis úlohy" rows="3"></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Dátum začiatku</mat-label>
+        <input matInput [matDatepicker]="startPicker" formControlName="startDate">
+        <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
+        <mat-datepicker #startPicker></mat-datepicker>
+        <mat-error *ngIf="taskForm.get('startDate')?.errors?.['required']">
+          Dátum začiatku je povinný
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Termín</mat-label>
+        <input matInput [matDatepicker]="duePicker" formControlName="dueDate">
+        <mat-datepicker-toggle matIconSuffix [for]="duePicker"></mat-datepicker-toggle>
+        <mat-datepicker #duePicker></mat-datepicker>
+        <mat-error *ngIf="taskForm.get('dueDate')?.errors?.['required']">
+          Termín je povinný
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>ID objednávky</mat-label>
+        <input matInput type="number" formControlName="orderId" placeholder="ID objednávky">
+      </mat-form-field>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="onCancel()">Zrušiť</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="!taskForm.valid">Vytvoriť</button>
+  </mat-dialog-actions>
+</form>
