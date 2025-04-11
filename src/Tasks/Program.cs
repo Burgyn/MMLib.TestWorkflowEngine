@@ -31,8 +31,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
 // Configure Tasks feature
 app.UseTasks();
 

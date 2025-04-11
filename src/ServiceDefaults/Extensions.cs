@@ -23,6 +23,17 @@ public static class Extensions
 
         builder.Services.AddServiceDiscovery();
 
+        builder.Services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(policy =>
+            {
+                policy.WithOrigins("http://localhost:4200", "https://localhost:4200")
+                      .AllowAnyHeader()
+                      .AllowAnyMethod()
+                      .AllowCredentials();
+            });
+        });
+
         builder.Services.ConfigureHttpClientDefaults(http =>
         {
             // Turn on resilience by default
@@ -103,6 +114,8 @@ public static class Extensions
         // See https://aka.ms/dotnet/aspire/healthchecks for details before enabling these endpoints in non-development environments.
         if (app.Environment.IsDevelopment())
         {
+            app.UseCors();
+
             // All health checks must pass for app to be considered ready to accept traffic after starting
             app.MapHealthChecks("/health");
 

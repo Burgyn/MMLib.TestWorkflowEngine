@@ -50,9 +50,10 @@ builder.Services.AddElsa(elsa =>
 // Configure CORS to allow designer app hosted on a different origin to invoke the APIs.
 builder.Services.AddCors(cors => cors
     .AddDefaultPolicy(policy => policy
-        .AllowAnyOrigin() // For demo purposes only. Use a specific origin instead.
+        .WithOrigins("http://localhost:4200", "https://localhost:4200") // Allow Angular development server
         .AllowAnyHeader()
         .AllowAnyMethod()
+        .AllowCredentials()
         .WithExposedHeaders("x-elsa-workflow-instance-id"))); // Required for Elsa Studio in order to support running workflows from the designer. Alternatively, you can use the `*` wildcard to expose all headers.
 
 // Add Health Checks.

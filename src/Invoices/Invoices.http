@@ -15,6 +15,7 @@ Content-Type: application/json
 {
     "customerName": "Michal Kováč",
     "dueDate": "2024-03-15T00:00:00Z",
+    "orderId": 1,
     "items": [
         {
             "description": "PlayStation 5 Digital Edition",

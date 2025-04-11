@@ -31,7 +31,7 @@ Content-Type: application/json
 }
 
 ### Complete order
-POST {{Orders_HostAddress}}/orders/1/complete
+POST {{Orders_HostAddress}}/orders/4/complete
 Content-Type: application/json
 
 {
