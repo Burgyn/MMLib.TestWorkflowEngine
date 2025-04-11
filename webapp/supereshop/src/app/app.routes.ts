@@ -17,6 +17,10 @@ export const routes: Routes = [
     component: InvoicesListComponent
   },
   {
+    path: 'emails',
+    loadChildren: () => import('./emails/emails.module').then(m => m.EmailsModule)
+  },
+  {
     path: '',
     redirectTo: 'orders',
     pathMatch: 'full'

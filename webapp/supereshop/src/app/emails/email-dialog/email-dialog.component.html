@@ -1,0 +1,20 @@
+<h2 mat-dialog-title>Odoslať email</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="emailForm">
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Správa</mat-label>
+      <textarea matInput formControlName="message" rows="5" placeholder="Zadajte správu..."></textarea>
+      <mat-error *ngIf="emailForm.get('message')?.hasError('required')">
+        Správa je povinná
+      </mat-error>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Zrušiť</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="!emailForm.valid">
+    Odoslať
+  </button>
+</mat-dialog-actions>
