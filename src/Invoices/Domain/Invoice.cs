@@ -14,6 +14,8 @@ public class Invoice
 
     public string? PaymentReference { get; set; }
 
+    public int? OrderId { get; set; }
+
     public InvoiceStatus Status { get; set; }
 
     public DateTime CreatedAt { get; set; }
