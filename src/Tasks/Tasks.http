@@ -1,6 +1,32 @@
-@Tasks_HostAddress = http://localhost:5124
+@Tasks_HostAddress = https://localhost:7046
 
-GET {{Tasks_HostAddress}}/weatherforecast/
+### Get all tasks
+GET {{Tasks_HostAddress}}/tasks
 Accept: application/json
 
-###
+### Get specific task
+GET {{Tasks_HostAddress}}/tasks/1
+Accept: application/json
+
+### Create new task
+POST {{Tasks_HostAddress}}/tasks
+Content-Type: application/json
+
+{
+    "assigneeEmail": "michal.kovac@example.com",
+    "description": "Review new product specifications",
+    "startDate": "2024-03-15T09:00:00Z",
+    "dueDate": "2024-03-17T17:00:00Z"
+}
+
+### Create new task linked to order
+POST {{Tasks_HostAddress}}/tasks
+Content-Type: application/json
+
+{
+    "assigneeEmail": "peter.novak@example.com",
+    "description": "Process order shipment",
+    "startDate": "2024-03-15T10:00:00Z",
+    "dueDate": "2024-03-16T16:00:00Z",
+    "orderId": 1
+}
