@@ -50,6 +50,7 @@ logger.LogInformation("Setting up processors for Service Bus topics...");
 
 await CreateProcessor("order-created", "order-created-sub", "OrderCreated");
 await CreateProcessor("order-status-changed", "order-status-changed-sub", "OrderStatusChanged");
+await CreateProcessor("order-completed", "order-completed-sub", "OrderCompleted");
 await CreateProcessor("invoice-created", "invoice-created-sub", "InvoiceCreated");
 await CreateProcessor("invoice-paid", "invoice-paid-sub", "InvoicePaid");
 await CreateProcessor("task-created", "task-created-sub", "TaskCreated");

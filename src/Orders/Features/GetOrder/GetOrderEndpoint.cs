@@ -23,6 +23,8 @@ public static class GetOrderEndpoint
                 o.Id,
                 o.CustomerName,
                 o.Description,
+                o.UnitPrice,
+                o.Quantity,
                 o.TotalAmount,
                 o.Status,
                 o.CreatedAt,

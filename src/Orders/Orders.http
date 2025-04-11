@@ -30,14 +30,6 @@ Content-Type: application/json
     "quantity": 2
 }
 
-### Update order status
-PUT {{Orders_HostAddress}}/orders/1/status
-Content-Type: application/json
-
-{
-    "newStatus": "InProgress"
-}
-
 ### Complete order
 POST {{Orders_HostAddress}}/orders/1/complete
 Content-Type: application/json
