@@ -10,6 +10,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { TasksService } from '../services/tasks.service';
 
 @Component({
@@ -23,14 +24,15 @@ import { TasksService } from '../services/tasks.service';
     MatCardModule,
     MatButtonModule,
     MatIconModule,
-    MatDialogModule
+    MatDialogModule,
+    MatTooltipModule
   ],
   templateUrl: './tasks-list.component.html',
   styleUrl: './tasks-list.component.css'
 })
 export class TasksListComponent implements OnInit {
   tasks: Task[] = [];
-  displayedColumns: string[] = ['id', 'assigneeEmail', 'description', 'startDate', 'dueDate', 'state', 'orderId', 'createdAt'];
+  displayedColumns: string[] = ['id', 'assigneeEmail', 'description', 'startDate', 'dueDate', 'state', 'orderId', 'createdAt', 'actions'];
   isLoading = true;
   TaskState = TaskState;
 
@@ -60,6 +62,32 @@ export class TasksListComponent implements OnInit {
     });
   }
 
+  completeTask(taskId: number): void {
+    this.tasksService.completeTask(taskId).subscribe({
+      next: () => {
+        this.loadTasks();
+      },
+      error: (error) => {
+        console.error('Error completing task:', error);
+      }
+    });
+  }
+
+  getRowClass(state: TaskState): string {
+    switch (state) {
+      case TaskState.New:
+        return 'state-new';
+      case TaskState.InProgress:
+        return 'state-in-progress';
+      case TaskState.Completed:
+        return 'state-completed';
+      case TaskState.Cancelled:
+        return 'state-cancelled';
+      default:
+        return '';
+    }
+  }
+
   private loadTasks(): void {
     this.tasksService.getTasks().subscribe({
       next: (data) => {
@@ -75,5 +103,9 @@ export class TasksListComponent implements OnInit {
 
   getStateText(state: TaskState): string {
     return TaskState[state];
+  }
+
+  canComplete(task: Task): boolean {
+    return task.state === TaskState.New || task.state === TaskState.InProgress;
   }
 }

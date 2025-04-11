@@ -11,6 +11,10 @@ export interface CreateTaskRequest {
   orderId: number | null;
 }
 
+export interface CompleteTaskRequest {
+  completedAt: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -25,5 +29,12 @@ export class TasksService {
 
   createTask(request: CreateTaskRequest): Observable<number> {
     return this.http.post<number>(`${this.apiUrl}/tasks`, request);
+  }
+
+  completeTask(id: number): Observable<void> {
+    const request: CompleteTaskRequest = {
+      completedAt: new Date().toISOString()
+    };
+    return this.http.post<void>(`${this.apiUrl}/tasks/${id}/complete`, request);
   }
 }
