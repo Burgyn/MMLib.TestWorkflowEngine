@@ -1,3 +1,6 @@
+using Aspire.Hosting;
+using System.IO;
+
 var builder = DistributedApplication.CreateBuilder(args);
 
 // Set Aspire store path
@@ -6,11 +9,30 @@ builder.Configuration["Aspire:Store:Path"] = Path.Combine(Directory.GetCurrentDi
 // Add Azure Service Bus with emulator
 var serviceBus = builder.AddAzureServiceBus("messaging");
 
-// Configure domain events topic with subscriptions per service
-var eventsTopic = serviceBus.AddServiceBusTopic("domain-events");
-eventsTopic.AddServiceBusSubscription("orders-subscription");
-eventsTopic.AddServiceBusSubscription("invoices-subscription");
-eventsTopic.AddServiceBusSubscription("tasks-subscription");
+// Configure topics for each specific event
+// Order events
+var orderCreatedTopic = serviceBus.AddServiceBusTopic("order-created");
+orderCreatedTopic.AddServiceBusSubscription("order-created-sub");
+
+var orderStatusChangedTopic = serviceBus.AddServiceBusTopic("order-status-changed");
+orderStatusChangedTopic.AddServiceBusSubscription("order-status-changed-sub");
+
+var orderCompletedTopic = serviceBus.AddServiceBusTopic("order-completed");
+orderCompletedTopic.AddServiceBusSubscription("order-completed-sub");
+
+// Invoice events
+var invoiceCreatedTopic = serviceBus.AddServiceBusTopic("invoice-created");
+invoiceCreatedTopic.AddServiceBusSubscription("invoice-created-sub");
+
+var invoicePaidTopic = serviceBus.AddServiceBusTopic("invoice-paid");
+invoicePaidTopic.AddServiceBusSubscription("invoice-paid-sub");
+
+// Task events
+var taskCreatedTopic = serviceBus.AddServiceBusTopic("task-created");
+taskCreatedTopic.AddServiceBusSubscription("task-created-sub");
+
+var taskCompletedTopic = serviceBus.AddServiceBusTopic("task-completed");
+taskCompletedTopic.AddServiceBusSubscription("task-completed-sub");
 
 serviceBus.RunAsEmulator();
 
@@ -28,9 +50,10 @@ var tasks = builder.AddProject<Projects.Tasks>("tasks")
 var n8n = builder.AddContainer("n8n", "n8nio/n8n:latest")
     .WithEnvironment("N8N_ENCRYPTION_KEY", "your-secure-encryption-key-here")
     .WithEnvironment("N8N_PORT", "5678")
-    .WithEnvironment("WEBHOOK_URL", "http://n8n:5678/")
+    .WithEnvironment("WEBHOOK_URL", "https://n8n:5678/")
     .WithEnvironment("GENERIC_TIMEZONE", "Europe/Bratislava")
     .WithEnvironment("N8N_LOG_LEVEL", "debug")
+    .WithEnvironment("N8N_PROTOCOL", "https")
     // Enable community nodes and install Azure Service Bus node
     .WithEnvironment("N8N_COMMUNITY_NODES_ENABLED", "true")
     .WithEnvironment("N8N_COMMUNITY_NODES", "n8n-nodes-azure-service-bus")
