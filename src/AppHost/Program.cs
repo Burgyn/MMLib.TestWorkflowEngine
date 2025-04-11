@@ -76,4 +76,25 @@ var integration = builder.AddProject<Projects.Integration>("integration")
 //    .WithReference(elsaServer)
 //    .WithEnvironment("Backend__Url", "{services.elsa-server.bindings.https}/elsa/api");
 
+// Add MailHog for email testing
+var mailhog = builder.AddContainer("mailhog", "mailhog/mailhog")
+    .WithEndpoint("smtp", endpoint =>
+    {
+        endpoint.Port = 1025;
+        endpoint.TargetPort = 1025;
+    })
+    .WithEndpoint("ui", endpoint =>
+    {
+        endpoint.Port = 8025;
+        endpoint.TargetPort = 8025;
+    });
+
+// Update n8n configuration to use MailHog
+n8n.WithEnvironment("SMTP_HOST", "{services.mailhog.bindings.smtp}")
+   .WithEnvironment("SMTP_PORT", "1025")
+   .WithEnvironment("N8N_EMAIL_MODE", "smtp")
+   .WithEnvironment("N8N_SMTP_SSL", "false")
+   .WithEnvironment("N8N_SMTP_USER", "")
+   .WithEnvironment("N8N_SMTP_PASS", "");
+
 builder.Build().Run();
