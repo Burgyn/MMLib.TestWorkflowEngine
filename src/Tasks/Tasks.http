@@ -1,4 +1,4 @@
-@Tasks_HostAddress = https://localhost:7046
+@Tasks_HostAddress = https://localhost:7106
 
 ### Get all tasks
 GET {{Tasks_HostAddress}}/tasks
