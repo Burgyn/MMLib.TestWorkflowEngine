@@ -431,3 +431,4 @@ src/webapp/supereshop/.DS_Store
 src/webapp/supereshop/Thumbs.db
 **spire-store**
 **n8n-data**
+src/N8n/n8n-nodes-mmlib/dist/**

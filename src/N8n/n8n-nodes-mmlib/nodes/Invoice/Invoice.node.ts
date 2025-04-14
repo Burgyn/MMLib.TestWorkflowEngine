@@ -8,51 +8,24 @@ import {
 
 export class Invoice implements INodeType {
 	description: INodeTypeDescription = {
-		displayName: 'Invoice',
+		displayName: 'Get Invoice',
 		name: 'invoice',
 		icon: 'file:invoice.svg',
 		group: ['transform'],
 		version: 1,
-		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
 		description: 'Get invoice information',
 		defaults: {
-			name: 'Invoice',
+			name: 'Get Invoice',
 		},
 		inputs: ['main'],
 		outputs: ['main'],
-		credentials: [
-			{
-				name: 'invoiceApi',
-				required: true,
-			},
-		],
 		properties: [
-			{
-				displayName: 'Operation',
-				name: 'operation',
-				type: 'options',
-				noDataExpression: true,
-				options: [
-					{
-						name: 'Get',
-						value: 'get',
-						description: 'Get an invoice',
-						action: 'Get an invoice',
-					},
-				],
-				default: 'get',
-			},
 			{
 				displayName: 'Invoice ID',
 				name: 'invoiceId',
 				type: 'string',
 				default: '',
 				required: true,
-				displayOptions: {
-					show: {
-						operation: ['get'],
-					},
-				},
 				description: 'The ID of the invoice to get',
 			},
 		],
@@ -61,35 +34,35 @@ export class Invoice implements INodeType {
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const items = this.getInputData();
 		const returnData: INodeExecutionData[] = [];
-		const operation = this.getNodeParameter('operation', 0) as string;
-		const credentials = await this.getCredentials('invoiceApi') as { apiUrl: string; apiKey: string };
+		const apiUrl = 'https://host.docker.internal:7257/invoices';
+
+		// @ts-ignore
+		process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 		for (let i = 0; i < items.length; i++) {
 			try {
-				if (operation === 'get') {
-					const invoiceId = this.getNodeParameter('invoiceId', i) as string;
-					
-					// Make API request to get invoice using global fetch
-					const response = await globalThis.fetch(`${credentials.apiUrl}/api/invoices/${invoiceId}`, {
-						headers: {
-							'Authorization': `Bearer ${credentials.apiKey}`,
-							'Content-Type': 'application/json',
-						},
-					});
+				const invoiceId = this.getNodeParameter('invoiceId', i) as string;
+				
+				// Make API request to get invoice using global fetch
+				const response = await globalThis.fetch(`${apiUrl}/${invoiceId}`, {
+					headers: {
+						'Content-Type': 'application/json',
+						'Accept': 'application/json',
+					},
+				});
 
-					if (!response.ok) {
-						throw new Error(`HTTP error! status: ${response.status}`);
-					}
-
-					const data = await response.json() as IDataObject;
-					
-					returnData.push({
-						json: data,
-						pairedItem: {
-							item: i,
-						},
-					});
+				if (!response.ok) {
+					throw new Error(`HTTP error! status: ${response.status}, message: ${await response.text()}`);
 				}
+
+				const data = await response.json() as IDataObject;
+				
+				returnData.push({
+					json: data,
+					pairedItem: {
+						item: i,
+					},
+				});
 			} catch (error) {
 				if (this.continueOnFail()) {
 					returnData.push({
