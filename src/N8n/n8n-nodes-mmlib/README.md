@@ -7,6 +7,9 @@ This package contains custom n8n nodes for MMLib.TestWorkflowEngine.
 ### Get Invoice
 Gets invoice information from the MMLib.TestWorkflowEngine API.
 
+### Order Created (Trigger)
+Webhook trigger that handles order created events. Creates a webhook endpoint that can receive POST requests with order data.
+
 ## Build Instructions
 
 1. Install dependencies:
@@ -31,9 +34,12 @@ The compiled nodes will be in the `dist` folder.
 ```
 n8n-nodes-mmlib/
 ├── nodes/
-│   └── Invoice/
-│       ├── Invoice.node.ts
-│       └── invoice.svg
+│   ├── Invoice/
+│   │   ├── Invoice.node.ts
+│   │   └── invoice.svg
+│   └── OrderCreated/
+│       ├── OrderCreated.node.ts
+│       └── order.svg
 ├── package.json
 └── tsconfig.json
 ```
@@ -56,5 +62,6 @@ dotnet run --project src/AppHost
 
 ## Notes
 
-- The node ignores SSL certificate validation to work with self-signed certificates
-- The API URL is hardcoded to `https://host.docker.internal:7257/invoices` 
+- The Get Invoice node ignores SSL certificate validation to work with self-signed certificates
+- The Get Invoice API URL is hardcoded to `https://host.docker.internal:7257/invoices`
+- The Order Created trigger creates a webhook endpoint that accepts POST requests 
