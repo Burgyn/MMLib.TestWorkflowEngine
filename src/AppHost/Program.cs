@@ -50,19 +50,22 @@ var tasks = builder.AddProject<Projects.Tasks>("tasks")
 var pdfCreator = builder.AddProject<Projects.PdfCreator>("pdf-creator");
 
 // Add n8n as Docker container
-var n8n = builder.AddContainer("n8n", "n8nio/n8n:latest")
+var n8n = builder.AddContainer("n8n", "n8nio/n8n")
     .WithEnvironment("N8N_ENCRYPTION_KEY", "your-secure-encryption-key-here")
     .WithEnvironment("N8N_PORT", "5678")
     .WithEnvironment("WEBHOOK_URL", "https://n8n:5678/")
     .WithEnvironment("GENERIC_TIMEZONE", "Europe/Bratislava")
     .WithEnvironment("N8N_LOG_LEVEL", "debug")
     .WithEnvironment("N8N_PROTOCOL", "https")
-    // Enable community nodes and install Azure Service Bus node
-    .WithEnvironment("N8N_COMMUNITY_NODES_ENABLED", "true")
-    .WithEnvironment("N8N_COMMUNITY_NODES", "n8n-nodes-azure-service-bus")
+    // Enable custom nodes
+    .WithEnvironment("N8N_CUSTOM_EXTENSIONS", "/home/node/.n8n/custom")
+    .WithEnvironment("N8N_NODES_INCLUDE", "n8n-nodes-base,n8n-nodes-mmlib")
+    .WithEnvironment("N8N_NODES_EXCLUDE_FROM_INCLUDE", "")
+    .WithEnvironment("N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS", "true")
     // Add Service Bus connection
     .WithEnvironment("AZURE_SERVICE_BUS_CONNECTION_STRING", "{messaging.connectionString}")
     .WithBindMount("n8n-data", "/home/node/.n8n")
+    .WithBindMount(Path.Combine(Directory.GetCurrentDirectory(), "../N8n/n8n-nodes-mmlib/dist"), "/home/node/.n8n/custom/node_modules/n8n-nodes-mmlib")
     .WithEndpoint("n8n", endpoint =>
     {
         endpoint.Port = 5678;
