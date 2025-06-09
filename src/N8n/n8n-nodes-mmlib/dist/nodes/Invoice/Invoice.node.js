@@ -3,51 +3,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Invoice = void 0;
 class Invoice {
     description = {
-        displayName: 'Invoice',
+        displayName: 'Get Invoice',
         name: 'invoice',
         icon: 'file:invoice.svg',
         group: ['transform'],
         version: 1,
-        subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
         description: 'Get invoice information',
         defaults: {
-            name: 'Invoice',
+            name: 'Get Invoice',
         },
         inputs: ['main'],
         outputs: ['main'],
-        credentials: [
-            {
-                name: 'invoiceApi',
-                required: true,
-            },
-        ],
         properties: [
-            {
-                displayName: 'Operation',
-                name: 'operation',
-                type: 'options',
-                noDataExpression: true,
-                options: [
-                    {
-                        name: 'Get',
-                        value: 'get',
-                        description: 'Get an invoice',
-                        action: 'Get an invoice',
-                    },
-                ],
-                default: 'get',
-            },
             {
                 displayName: 'Invoice ID',
                 name: 'invoiceId',
                 type: 'string',
                 default: '',
                 required: true,
-                displayOptions: {
-                    show: {
-                        operation: ['get'],
-                    },
-                },
                 description: 'The ID of the invoice to get',
             },
         ],
@@ -55,29 +28,27 @@ class Invoice {
     async execute() {
         const items = this.getInputData();
         const returnData = [];
-        const operation = this.getNodeParameter('operation', 0);
-        const credentials = await this.getCredentials('invoiceApi');
+        const apiUrl = 'https://host.docker.internal:7257/invoices';
+        process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
         for (let i = 0; i < items.length; i++) {
             try {
-                if (operation === 'get') {
-                    const invoiceId = this.getNodeParameter('invoiceId', i);
-                    const response = await globalThis.fetch(`${credentials.apiUrl}/api/invoices/${invoiceId}`, {
-                        headers: {
-                            'Authorization': `Bearer ${credentials.apiKey}`,
-                            'Content-Type': 'application/json',
-                        },
-                    });
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    const data = await response.json();
-                    returnData.push({
-                        json: data,
-                        pairedItem: {
-                            item: i,
-                        },
-                    });
+                const invoiceId = this.getNodeParameter('invoiceId', i);
+                const response = await globalThis.fetch(`${apiUrl}/${invoiceId}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}, message: ${await response.text()}`);
                 }
+                const data = await response.json();
+                returnData.push({
+                    json: data,
+                    pairedItem: {
+                        item: i,
+                    },
+                });
             }
             catch (error) {
                 if (this.continueOnFail()) {
