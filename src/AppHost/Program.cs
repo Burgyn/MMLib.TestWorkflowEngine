@@ -1,4 +1,5 @@
 using Aspire.Hosting;
+using Aspire.Hosting.ApplicationModel;
 using System.IO;
 
 var builder = DistributedApplication.CreateBuilder(args);
@@ -34,7 +35,26 @@ taskCreatedTopic.AddServiceBusSubscription("task-created-sub");
 var taskCompletedTopic = serviceBus.AddServiceBusTopic("task-completed");
 taskCompletedTopic.AddServiceBusSubscription("task-completed-sub");
 
-serviceBus.RunAsEmulator();
+serviceBus.RunAsEmulator(sb =>
+{
+    sb.WithHttpEndpoint(targetPort: 5300, name: "sbhealthendpoint")
+        .WithImageTag("1.1.2")
+        .WithContainerName("servicebus")
+        .WithEnvironment("SQL_WAIT_INTERVAL", "1");
+
+    var edge = sb.ApplicationBuilder.Resources.OfType<ContainerResource>()
+        .First(resource => resource.Name.EndsWith("-sqledge"));
+
+    var annotation = edge.Annotations.OfType<ContainerImageAnnotation>().First();
+
+    annotation.Image = "mssql/server";
+    annotation.Tag = "2022-latest";
+});
+
+var sbHc = serviceBus.Resource.Annotations.OfType<HealthCheckAnnotation>().First();
+serviceBus.Resource.Annotations.Remove(sbHc);
+
+serviceBus.WithHttpHealthCheck("/health", 200, "sbhealthendpoint");
 
 // Add services with Service Bus reference
 var invoices = builder.AddProject<Projects.Invoices>("invoices")
